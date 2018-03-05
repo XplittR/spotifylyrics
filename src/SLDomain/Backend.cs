@@ -57,15 +57,34 @@ namespace SpotifyLyricsDomain {
                 song = parts[0];
             }
 
-            song = Regex.Replace(song, @"\s+", " ");
-            return Services.Genius(artist, song);
+            song = Regex.Replace(song, @"\s+", " "); //Replace all whitespace with a single space
+            artist = artist.Trim();
+            song = song.Trim();
+            return LoadLyrics(new Media { Artist = artist, Song = song });
+        }
+
+        public static string LoadLyrics(Media media) {
+            var services = new List<Func<Media, string>> {
+                Services.Genius,
+                Services.Genius2,
+            };
+            var currentService = services.First();
+            //foreach
+            var lyrics = currentService(media);
+            lyrics = lyrics.Replace("&amp;", "&").Replace("`", "'").Trim();
+            return lyrics;
         }
     }
 
+    public class Media {
+        public string Artist;
+        public string Song;
+    }
+
     public static class Services {
-        public static string Genius(string artist, string song) {
-            artist = artist.Replace(' ', '-');
-            song = song.Replace(' ', '-');
+        public static string Genius(Media media) {
+            var artist = media.Artist.Replace(' ', '-');
+            var song = media.Song.Replace(' ', '-');
             var url = $"http://genius.com/{artist}-{song}-lyrics";
 
             string html = string.Empty;
@@ -80,6 +99,10 @@ namespace SpotifyLyricsDomain {
 
             Console.WriteLine(html);
             return html;
+            //todo: return url for clickable
+        }
+        public static string Genius2(Media media) {
+            return Genius(media);
         }
     }
 }
