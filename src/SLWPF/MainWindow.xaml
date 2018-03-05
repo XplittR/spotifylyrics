@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:domain="clr-namespace:SpotifyLyricsDomain;assembly=SpotifyLyricsDomain"
-        mc:Ignorable="d" d:DataContext="{d:DesignInstance domain:Backend}"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance domain:BackendViewModel}"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <Grid.RowDefinitions>

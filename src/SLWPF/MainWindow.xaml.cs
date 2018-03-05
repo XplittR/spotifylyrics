@@ -5,11 +5,11 @@ using SpotifyLyricsDomain;
 
 namespace SpotifyLyricsWPF {
     public partial class MainWindow : Window {
-        public Backend ViewModel { get; set; }
+        public BackendViewModel ViewModel { get; set; }
 
         public MainWindow() {
             InitializeComponent();
-            DataContext = ViewModel = new Backend();
+            DataContext = ViewModel = new BackendViewModel();
             DispatcherTimer t = new DispatcherTimer();
             t.Tick += Tick;
             t.Interval = TimeSpan.FromSeconds(1);
