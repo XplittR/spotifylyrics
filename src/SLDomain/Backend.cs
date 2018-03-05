@@ -66,13 +66,27 @@ namespace SpotifyLyricsDomain {
 
         public static string LoadLyrics(Media media) {
             var services = new List<Func<Media, string>> {
+                Services.MusixMatch,
                 Services.Genius,
-                Services.Genius2,
+
             };
-            var currentService = services.First();
-            //foreach
-            var lyrics = currentService(media);
-            lyrics = lyrics.Replace("&amp;", "&").Replace("`", "'").Trim();
+            string lyrics = null;
+            foreach (var service in services) {
+                try {
+                    lyrics = service(media);
+                } catch (LyricsNotFoundException ex) {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                } catch (ServiceNotAvailableException ex) {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.Message);
+                    throw;
+                }
+            }
+
+            lyrics = lyrics?.Replace("&amp;", "&").Replace("`", "'").Trim();
             return lyrics;
         }
     }
@@ -128,7 +142,27 @@ namespace SpotifyLyricsDomain {
             //todo: return url for clickable
         }
 
-        public static string Genius2(Media media) {
+        public static string MusixMatch(Media media) {
+
+            media.Artist = media.Artist.Replace(' ', '-');
+            media.Song = media.Song.Replace(' ', '-');
+            var url = $"https://www.musixmatch.com/search/{media.Artist}-{media.Song}/tracks";
+
+            HtmlDocument doc = new HtmlDocument();
+            try {
+                using (var client = new WebClient()) {
+                    client.Headers[HttpRequestHeader.UserAgent] = "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)";
+                    var html = client.DownloadString(url);
+                    doc.LoadHtml(html);
+                }
+            } catch (Exception ex) {
+                throw ServiceNotAvailableException.Create(nameof(Genius), media, ex);
+            }
+
+            //todo: parse the searchresults, do a clean lookup on the first, and get the lyrics text
+
+
+
             return Genius(media);
         }
     }
