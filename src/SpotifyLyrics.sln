@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyLyrics", "SpotifyLyrics.csproj", "{7BFDB779-F075-4728-96B5-F5545F2E9A4E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyLyrics", "SLWPF\SpotifyLyricsWPF.csproj", "{7BFDB779-F075-4728-96B5-F5545F2E9A4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyLyricsDomain", "..\SpotifyLyricsDomain\SpotifyLyricsDomain.csproj", "{DE9A9B34-8895-42E8-BB47-962B25479531}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpotifyLyricsDomain", "SLDomain\SpotifyLyricsDomain.csproj", "{A9D0232C-C718-4AE0-9F06-ABC73060CF09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{7BFDB779-F075-4728-96B5-F5545F2E9A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BFDB779-F075-4728-96B5-F5545F2E9A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BFDB779-F075-4728-96B5-F5545F2E9A4E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DE9A9B34-8895-42E8-BB47-962B25479531}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DE9A9B34-8895-42E8-BB47-962B25479531}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DE9A9B34-8895-42E8-BB47-962B25479531}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DE9A9B34-8895-42E8-BB47-962B25479531}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9D0232C-C718-4AE0-9F06-ABC73060CF09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9D0232C-C718-4AE0-9F06-ABC73060CF09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9D0232C-C718-4AE0-9F06-ABC73060CF09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9D0232C-C718-4AE0-9F06-ABC73060CF09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
