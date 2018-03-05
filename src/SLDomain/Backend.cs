@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 
 namespace SpotifyLyricsDomain {
     public static class Backend {
@@ -81,26 +82,52 @@ namespace SpotifyLyricsDomain {
         public string Song;
     }
 
+    public class LyricsNotFoundException : Exception {
+        private LyricsNotFoundException(string message) : base(message) { }
+
+        public static LyricsNotFoundException Create(string service, Media media, string attemptedUrl) {
+            var msg = $"Could not find lyrics. Service: \"{service}\". Artist: \"{media.Artist}\". Song: \"{media.Song}\". Attempted URL: \"{attemptedUrl}\".";
+            return new LyricsNotFoundException(msg);
+        }
+    }
+
+    public class ServiceNotAvailableException : Exception {
+        public static Dictionary<string, DateTime> ServiceExceptions = new Dictionary<string, DateTime>();
+        private ServiceNotAvailableException(string message, Exception innerException) : base(message, innerException) { }
+
+        public static ServiceNotAvailableException Create(string service, Media media, Exception innerException) {
+            ServiceExceptions[service] = DateTime.Now; //todo: for not querying this service until a certain time has passed.
+            var msg = $"Service unavailable. Service: \"{service}\". Artist: \"{media.Artist}\". Song: \"{media.Song}\".";
+            return new ServiceNotAvailableException(msg, innerException);
+        }
+    }
+
     public static class Services {
         public static string Genius(Media media) {
-            var artist = media.Artist.Replace(' ', '-');
-            var song = media.Song.Replace(' ', '-');
-            var url = $"http://genius.com/{artist}-{song}-lyrics";
-
-            string html = string.Empty;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.AutomaticDecompression = DecompressionMethods.GZip;
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream)) {
-                html = reader.ReadToEnd();
+            media.Artist = media.Artist.Replace(' ', '-');
+            media.Song = media.Song.Replace(' ', '-');
+            var url = $"http://genius.com/{media.Artist}-{media.Song}-lyrics";
+            HtmlDocument doc;
+            try {
+                var web = new HtmlWeb();
+                doc = web.Load(url);
+            } catch (Exception ex) {
+                throw ServiceNotAvailableException.Create(nameof(Genius), media, ex);
             }
 
-            Console.WriteLine(html);
-            return html;
+            var lyricDivs = doc.DocumentNode.Descendants("div").Where(n => (n as HtmlNode).HasClass("lyrics")).ToList();
+            if (!lyricDivs.Any()) {
+                throw LyricsNotFoundException.Create(nameof(Genius), media, url);
+            }
+            if (lyricDivs.Count > 1) {
+                Console.WriteLine("todo..");
+            }
+            var lyricNode = lyricDivs.First();
+            var lyrics = lyricNode.InnerText;
+            return lyrics;
             //todo: return url for clickable
         }
+
         public static string Genius2(Media media) {
             return Genius(media);
         }
