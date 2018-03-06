@@ -21,7 +21,7 @@
             <TextBlock Grid.Column="0" Text="{Binding WindowTitle}" />
 
             <Button Grid.Column="1" Content="Change lyrics"/>
-            <Button Grid.Column="2" Content="Options"/>
+            <Button Grid.Column="2" Content="Options" Click="Options_OnClicked"/>
             <Button Grid.Column="3" Content="FontSize"/>
         </Grid>
         <TextBox Grid.Row="1" Text="{Binding Lyrics}" IsReadOnly="True" />

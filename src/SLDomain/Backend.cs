@@ -63,17 +63,20 @@ namespace SpotifyLyricsDomain {
             song = song.Trim();
             return LoadLyrics(new Media { Artist = artist, Song = song });
         }
+        private static List<Func<Media, string>> _serviceList = new List<Func<Media, string>> {
+            Services.MusixMatch,
+            Services.Genius,
+        };
 
+        public static void ShuffleServices() {
+            _serviceList = _serviceList.OrderBy(a => Guid.NewGuid()).ToList();
+        }
         public static string LoadLyrics(Media media) {
-            var services = new List<Func<Media, string>> {
-                Services.MusixMatch,
-                Services.Genius,
-
-            };
             string lyrics = null;
-            foreach (var service in services) {
+            foreach (var service in _serviceList) {
                 try {
                     lyrics = service(media);
+                    break;
                 } catch (LyricsNotFoundException ex) {
                     Console.WriteLine(ex.Message);
                     throw;

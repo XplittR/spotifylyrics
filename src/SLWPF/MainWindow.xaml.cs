@@ -14,10 +14,21 @@ namespace SpotifyLyricsWPF {
             t.Tick += Tick;
             t.Interval = TimeSpan.FromSeconds(1);
             t.Start();
+
         }
 
         private void Tick(object sender, EventArgs e) {
-            ViewModel.UpdateTitle();
+            try {
+                ViewModel.UpdateTitle();
+            } catch (Exception ex) {
+                ViewModel.WindowTitle = "error";
+            }
+        }
+
+        private void Options_OnClicked(object sender, RoutedEventArgs e) {
+            //todo: stop the timer.
+            var dlg = new OptionsDialog(new OptionsViewModel()) { Owner = this };
+            dlg.ShowDialog();
         }
     }
 }
