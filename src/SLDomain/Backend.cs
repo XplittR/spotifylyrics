@@ -134,6 +134,7 @@ namespace SpotifyLyricsDomain {
                 throw LyricsNotFoundException.Create(nameof(Genius), media, url);
             }
             if (lyricDivs.Count > 1) {
+                //todo: Do we need to select one in this case?
                 Console.WriteLine("todo..");
             }
             var lyricNode = lyricDivs.First();
@@ -143,27 +144,50 @@ namespace SpotifyLyricsDomain {
         }
 
         public static string MusixMatch(Media media) {
-
+            const string userAgent = "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)";
             media.Artist = media.Artist.Replace(' ', '-');
             media.Song = media.Song.Replace(' ', '-');
             var url = $"https://www.musixmatch.com/search/{media.Artist}-{media.Song}/tracks";
 
-            HtmlDocument doc = new HtmlDocument();
+            string html;
             try {
-                using (var client = new WebClient()) {
-                    client.Headers[HttpRequestHeader.UserAgent] = "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)";
-                    var html = client.DownloadString(url);
-                    doc.LoadHtml(html);
-                }
+                html = GetHtml(url, userAgent);
             } catch (Exception ex) {
-                throw ServiceNotAvailableException.Create(nameof(Genius), media, ex);
+                throw ServiceNotAvailableException.Create(nameof(MusixMatch), media, ex);
             }
 
-            //todo: parse the searchresults, do a clean lookup on the first, and get the lyrics text
+            var rgx = new Regex(@"""track_share_url"":""([^""]*)""");
+            if (!rgx.IsMatch(html)) {
+                throw LyricsNotFoundException.Create(nameof(MusixMatch), media, url);
+            }
 
+            var trackShareUrl = rgx.Match(html).Groups[1].Value;
+            trackShareUrl = Regex.Unescape(trackShareUrl);
+            HtmlDocument doc = new HtmlDocument();
+            try {
+                html = GetHtml(trackShareUrl, userAgent);
+                doc.LoadHtml(html);
+            } catch (Exception ex) {
+                throw ServiceNotAvailableException.Create(nameof(MusixMatch), media, ex);
+            }
+            var notAvailable = doc.DocumentNode.Descendants("div").Any(n => (n as HtmlNode).HasClass("mxm-lyrics-not-available"));
+            if (notAvailable) {
+                throw LyricsNotFoundException.Create(nameof(MusixMatch), media, url);
+            }
 
+            var lyrics = doc.DocumentNode.OuterHtml.Split(new[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split(new[] { "\",\"language\":\"" }, StringSplitOptions.None)[0];
+            lyrics = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
+            return lyrics;
+        }
 
-            return Genius(media);
+        private static string GetHtml(string url, string userAgent) {
+            //Todo: Extend to allow to set other headers than useragent? Dictionary<HttpRequestHeader,string>?
+            string html;
+            using (var client = new WebClient()) {
+                client.Headers[HttpRequestHeader.UserAgent] = userAgent;
+                html = client.DownloadString(url);
+            }
+            return html;
         }
     }
 }
