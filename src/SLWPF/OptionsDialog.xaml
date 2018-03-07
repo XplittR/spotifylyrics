@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpotifyLyricsWPF"
         xmlns:spotifyLyricsDomain="clr-namespace:SpotifyLyricsDomain;assembly=SpotifyLyricsDomain"
+        xmlns:options="clr-namespace:SpotifyLyricsWPF.Options"
         mc:Ignorable="d" d:DataContext="{d:DesignInstance spotifyLyricsDomain:OptionsViewModel}"
         Title="OptionsDialog" Height="450" Width="800">
     <TabControl>
@@ -14,7 +15,8 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <ListBox ItemsSource="{Binding Services}" HorizontalContentAlignment="Stretch">
+                <ListBox HorizontalContentAlignment="Stretch"
+                         ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid >
@@ -30,7 +32,10 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <!--<Button Content="Do magic" Click="MagicButton_OnClicked"></Button>-->
+
+                <ContentControl Grid.Column="1"
+                                ContentTemplateSelector="{StaticResource MyOptionsDetailsDataTemplateSelector}"
+                                Content="{Binding SelectedService, Mode=OneWay}"/>
             </Grid>
         </TabItem>
     </TabControl>

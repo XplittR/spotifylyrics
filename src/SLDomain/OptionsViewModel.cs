@@ -18,6 +18,7 @@ namespace SpotifyLyricsDomain {
             } else {
                 CreateDefaultSettings();
             }
+            SelectedService = Services.First();
         }
 
         private void CreateDefaultSettings() {
@@ -25,9 +26,11 @@ namespace SpotifyLyricsDomain {
                 new GeniusService(),
                 new MusixMatchService(),
             };
+
         }
 
-        public List<LyricsService> Services { get; set; } = new List<LyricsService>();
+        public List<LyricsService> Services { get; set; }
+        public LyricsService SelectedService { get; set; }
     }
 
     public abstract class LyricsService {
