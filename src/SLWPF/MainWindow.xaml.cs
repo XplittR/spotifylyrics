@@ -9,12 +9,14 @@ namespace SpotifyLyricsWPF {
 
         public MainWindow() {
             InitializeComponent();
+            OptionsViewModel.Instance = new OptionsViewModel();
             DataContext = ViewModel = new BackendViewModel();
             DispatcherTimer t = new DispatcherTimer();
             t.Tick += Tick;
             t.Interval = TimeSpan.FromSeconds(1);
             t.Start();
-
+            
+            
         }
 
         private void Tick(object sender, EventArgs e) {
@@ -26,8 +28,8 @@ namespace SpotifyLyricsWPF {
         }
 
         private void Options_OnClicked(object sender, RoutedEventArgs e) {
-            //todo: stop the timer.
-            var dlg = new OptionsDialog(new OptionsViewModel()) { Owner = this };
+            //todo: stop the DispatcherTimer?
+            var dlg = new OptionsDialog() { Owner = this };
             dlg.ShowDialog();
         }
     }

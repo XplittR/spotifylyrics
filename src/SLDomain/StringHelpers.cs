@@ -14,5 +14,11 @@ namespace SpotifyLyricsDomain {
         public static string[] Split(this string str, string separator, StringSplitOptions splitOptions = StringSplitOptions.None) {
             return str.Split(new[] { separator }, splitOptions);
         }
+
+        public static string TrimEnd(this string str, string substring) {
+            if (str.EndsWith(substring))
+                return str.Substring(0, str.Length - substring.Length);
+            return str;
+        }
     }
 }

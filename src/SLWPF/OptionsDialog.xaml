@@ -4,9 +4,35 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SpotifyLyricsWPF"
-        mc:Ignorable="d"
+        xmlns:spotifyLyricsDomain="clr-namespace:SpotifyLyricsDomain;assembly=SpotifyLyricsDomain"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance spotifyLyricsDomain:OptionsViewModel}"
         Title="OptionsDialog" Height="450" Width="800">
-    <Grid>
-        <Button Content="Do magic" Click="MagicButton_OnClicked"></Button>
-    </Grid>
+    <TabControl>
+        <TabItem Header="Services">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ListBox ItemsSource="{Binding Services}" HorizontalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding ServiceName}" />
+                                <Button Grid.Column="1" Content="^"/>
+                                <Button Grid.Column="2" Content="v"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <!--<Button Content="Do magic" Click="MagicButton_OnClicked"></Button>-->
+            </Grid>
+        </TabItem>
+    </TabControl>
+
 </Window>

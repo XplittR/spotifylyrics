@@ -154,7 +154,7 @@ namespace SpotifyLyricsDomain {
 
             string html;
             try {
-                html = GetHtml(url, userAgent);
+                html = HttpHelpers.GetHtml(url, userAgent);
             } catch (Exception ex) {
                 throw ServiceNotAvailableException.Create(nameof(MusixMatch), media, ex);
             }
@@ -168,7 +168,7 @@ namespace SpotifyLyricsDomain {
             trackShareUrl = Regex.Unescape(trackShareUrl);
             HtmlDocument doc = new HtmlDocument();
             try {
-                html = GetHtml(trackShareUrl, userAgent);
+                html = HttpHelpers.GetHtml(trackShareUrl, userAgent);
                 doc.LoadHtml(html);
             } catch (Exception ex) {
                 throw ServiceNotAvailableException.Create(nameof(MusixMatch), media, ex);
@@ -182,13 +182,16 @@ namespace SpotifyLyricsDomain {
             lyrics = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
             return lyrics;
         }
+    }
 
-        private static string GetHtml(string url, string userAgent) {
+    public static class HttpHelpers {
+        public static string GetHtml(string url, string userAgent) {
+            //todo: To HttpExtensions, or something?
             //Todo: Extend to allow to set other headers than useragent? Dictionary<HttpRequestHeader,string>?
             string html;
             using (var client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = userAgent;
-                html = client.DownloadString(url);
+                html                                        = client.DownloadString(url);
             }
             return html;
         }
