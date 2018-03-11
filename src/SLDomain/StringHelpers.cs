@@ -20,5 +20,9 @@ namespace SpotifyLyricsDomain {
                 return str.Substring(0, str.Length - substring.Length);
             return str;
         }
+
+        public static bool EqualsIgnCase(this string orig, string compareTo) {
+            return String.Equals(orig, compareTo, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

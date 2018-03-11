@@ -4,9 +4,9 @@ using PropertyChanged;
 
 namespace SpotifyLyricsDomain {
     [AddINotifyPropertyChangedInterface]
-    public class BackendViewModel  {
+    public class BackendViewModel {
         public string WindowTitle { get; set; }
-        public string Lyrics { get; set; }
+        public Media MyMedia { get; set; }
 
         public void UpdateTitle() {
             var newTitle = Backend.GetWindowTitle();
@@ -17,7 +17,12 @@ namespace SpotifyLyricsDomain {
         }
 
         private void UpdateLyrics() {
-            Lyrics = Backend.GetLyrics(WindowTitle);
+            SetLoadingLyrics();
+            MyMedia = Backend.GetLyrics(WindowTitle);
+        }
+
+        public void SetLoadingLyrics() {
+            MyMedia = new Media("Loading", "Loading") { Lyrics = "Loading..." };
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using PropertyChanged;
 
 namespace SpotifyLyricsDomain {
     public static class Backend {
@@ -41,7 +42,7 @@ namespace SpotifyLyricsDomain {
             return list.ToArray();
         }
 
-        public static string GetLyrics(string artistAndSong) {
+        public static Media GetLyrics(string artistAndSong) {
             string artist = string.Empty, song = string.Empty;
             if (artistAndSong.SubstringCount(" - ") == 1) {
                 var parts = artistAndSong.Split(" - ");
@@ -61,23 +62,18 @@ namespace SpotifyLyricsDomain {
             song = Regex.Replace(song, @"\s+", " "); //Replace all whitespace with a single space
             artist = artist.Trim();
             song = song.Trim();
-            return LoadLyrics(new Media { Artist = artist, Song = song });
+            return LoadLyrics(new Media(artist, song));
         }
-        private static List<Func<Media, string>> _serviceList = new List<Func<Media, string>> {
-            Services.MusixMatch,
-            Services.Genius,
-        };
 
         public static void ShuffleServices() {
-            _serviceList = _serviceList.OrderBy(a => Guid.NewGuid()).ToList();
+
         }
 
-        public static string LoadLyrics(Media media) {
-            string lyrics = null;
+        public static Media LoadLyrics(Media media) {
 
             foreach (var service in OptionsViewModel.Instance.Services.Where(s => s.IsEnabled)) {
                 try {
-                    lyrics = service.GetLyrics(media);
+                    media = service.GetLyrics(media);
                     break;
                 } catch (LyricsNotFoundException ex) {
                     Console.WriteLine(ex.Message);
@@ -91,14 +87,27 @@ namespace SpotifyLyricsDomain {
                 }
             }
 
-            lyrics = lyrics?.Replace("&amp;", "&").Replace("`", "'").Trim();
-            return lyrics;
+            return media;
         }
     }
 
+    [AddINotifyPropertyChangedInterface]
     public class Media {
-        public string Artist;
-        public string Song;
+        public readonly string Artist;
+        public readonly string Song;
+
+        public Media(string artist, string song) {
+            Artist = artist;
+            Song = song;
+        }
+
+        //todo: UrlArtist and UrlSong-get properties?
+        public string DisplayTitle { get { return $"{Artist} - {Song}"; } }
+        public string Url { get; set; }
+        public string Lyrics { get; set; }
+        public override string ToString() {
+            return $"Media: {Artist} - {Song}";
+        }
     }
 
     public class LyricsNotFoundException : Exception {
@@ -118,84 +127,6 @@ namespace SpotifyLyricsDomain {
             ServiceExceptions[service] = DateTime.Now; //todo: for not querying this service until a certain time has passed.
             var msg = $"Service unavailable. Service: \"{service}\". Artist: \"{media.Artist}\". Song: \"{media.Song}\".";
             return new ServiceNotAvailableException(msg, innerException);
-        }
-    }
-
-    public static class Services {
-        public static string Genius(Media media) {
-            media.Artist = media.Artist.Replace(' ', '-');
-            media.Song = media.Song.Replace(' ', '-');
-            var url = $"http://genius.com/{media.Artist}-{media.Song}-lyrics";
-            HtmlDocument doc;
-            try {
-                var web = new HtmlWeb();
-                doc = web.Load(url);
-            } catch (Exception ex) {
-                throw ServiceNotAvailableException.Create(nameof(Genius), media, ex);
-            }
-
-            var lyricDivs = doc.DocumentNode.Descendants("div").Where(n => (n as HtmlNode).HasClass("lyrics")).ToList();
-            if (!lyricDivs.Any()) {
-                throw LyricsNotFoundException.Create(nameof(Genius), media, url);
-            }
-            if (lyricDivs.Count > 1) {
-                //todo: Do we need to select one in this case?
-                Console.WriteLine("todo..");
-            }
-            var lyricNode = lyricDivs.First();
-            var lyrics = lyricNode.InnerText;
-            return lyrics;
-            //todo: return url for clickable
-        }
-
-        public static string MusixMatch(Media media) {
-            const string userAgent = "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)";
-            media.Artist = media.Artist.Replace(' ', '-');
-            media.Song = media.Song.Replace(' ', '-');
-            var url = $"https://www.musixmatch.com/search/{media.Artist}-{media.Song}/tracks";
-
-            string html;
-            try {
-                html = HttpHelpers.GetHtml(url, userAgent);
-            } catch (Exception ex) {
-                throw ServiceNotAvailableException.Create(nameof(MusixMatch), media, ex);
-            }
-
-            var rgx = new Regex(@"""track_share_url"":""([^""]*)""");
-            if (!rgx.IsMatch(html)) {
-                throw LyricsNotFoundException.Create(nameof(MusixMatch), media, url);
-            }
-
-            var trackShareUrl = rgx.Match(html).Groups[1].Value;
-            trackShareUrl = Regex.Unescape(trackShareUrl);
-            HtmlDocument doc = new HtmlDocument();
-            try {
-                html = HttpHelpers.GetHtml(trackShareUrl, userAgent);
-                doc.LoadHtml(html);
-            } catch (Exception ex) {
-                throw ServiceNotAvailableException.Create(nameof(MusixMatch), media, ex);
-            }
-            var notAvailable = doc.DocumentNode.Descendants("div").Any(n => (n as HtmlNode).HasClass("mxm-lyrics-not-available"));
-            if (notAvailable) {
-                throw LyricsNotFoundException.Create(nameof(MusixMatch), media, url);
-            }
-
-            var lyrics = doc.DocumentNode.OuterHtml.Split(new[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split(new[] { "\",\"language\":\"" }, StringSplitOptions.None)[0];
-            lyrics = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
-            return lyrics;
-        }
-    }
-
-    public static class HttpHelpers {
-        public static string GetHtml(string url, string userAgent) {
-            //todo: To HttpExtensions, or something?
-            //Todo: Extend to allow to set other headers than useragent? Dictionary<HttpRequestHeader,string>?
-            string html;
-            using (var client = new WebClient()) {
-                client.Headers[HttpRequestHeader.UserAgent] = userAgent;
-                html = client.DownloadString(url);
-            }
-            return html;
         }
     }
 }

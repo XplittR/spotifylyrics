@@ -36,7 +36,17 @@ namespace SpotifyLyricsDomain {
     [AddINotifyPropertyChangedInterface]
     public abstract class LyricsService {
         public bool IsEnabled { get; set; } = true;
-        public abstract string GetLyrics(Media media);
+        protected abstract void GetLyricsInternal(Media media);
+
+        private readonly Dictionary<string, Media> _lyricsCache = new Dictionary<string, Media>();
+        public Media GetLyrics(Media media) {
+            if (!_lyricsCache.ContainsKey(media.Artist + media.Song)) {
+                GetLyricsInternal(media);
+                media.Lyrics = media.Lyrics.Replace("&amp;", "&").Replace("`", "'").Trim();
+                _lyricsCache.Add(media.Artist + media.Song, media);
+            }
+            return _lyricsCache[media.Artist + media.Song];
+        }
 
         public string ServiceName {
             get {
@@ -46,10 +56,11 @@ namespace SpotifyLyricsDomain {
     }
 
     public class GeniusService : LyricsService {
-        public override string GetLyrics(Media media) {
-            media.Artist = media.Artist.Replace(' ', '-');
-            media.Song = media.Song.Replace(' ', '-');
-            var url = $"http://genius.com/{media.Artist}-{media.Song}-lyrics";
+        protected override void GetLyricsInternal(Media media) {
+            var urlArtist = media.Artist.Replace(' ', '-');
+            var urlSong = media.Song.Replace(' ', '-');
+            var url = $"http://genius.com/{urlArtist}-{urlSong}-lyrics";
+            media.Url = url;
             HtmlDocument doc;
             try {
                 var web = new HtmlWeb();
@@ -68,7 +79,7 @@ namespace SpotifyLyricsDomain {
             }
             var lyricNode = lyricDivs.First();
             var lyrics = lyricNode.InnerText;
-            return lyrics;
+            media.Lyrics = lyrics;
             //todo: return url for clickable
         }
 
@@ -76,11 +87,12 @@ namespace SpotifyLyricsDomain {
     }
 
     public class MusixMatchService : LyricsService {
-        public override string GetLyrics(Media media) {
+        protected override void GetLyricsInternal(Media media) {
             const string userAgent = "curl/7.9.8 (i686-pc-linux-gnu) libcurl 7.9.8 (OpenSSL 0.9.6b) (ipv6 enabled)";
-            media.Artist = media.Artist.Replace(' ', '-');
-            media.Song = media.Song.Replace(' ', '-');
-            var url = $"https://www.musixmatch.com/search/{media.Artist}-{media.Song}/tracks";
+            var artist = media.Artist.Replace(' ', '-');
+            var song = media.Song.Replace(' ', '-');
+            var url = $"https://www.musixmatch.com/search/{artist}-{song}/tracks";
+            media.Url = url;
 
             string html;
             try {
@@ -110,7 +122,20 @@ namespace SpotifyLyricsDomain {
 
             var lyrics = doc.DocumentNode.OuterHtml.Split(new[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split(new[] { "\",\"language\":\"" }, StringSplitOptions.None)[0];
             lyrics = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
-            return lyrics;
+            media.Lyrics = lyrics;
+        }
+    }
+
+    public static class HttpHelpers {
+        public static string GetHtml(string url, string userAgent) {
+            //todo: To HttpExtensions, or something?
+            //Todo: Extend to allow to set other headers than useragent? Dictionary<HttpRequestHeader,string>?
+            string html;
+            using (var client = new WebClient()) {
+                client.Headers[HttpRequestHeader.UserAgent] = userAgent;
+                html = client.DownloadString(url);
+            }
+            return html;
         }
     }
 }
