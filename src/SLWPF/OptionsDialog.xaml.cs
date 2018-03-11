@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using SpotifyLyricsDomain;
+using SpotifyLyricsDomain.ViewModels;
 
 namespace SpotifyLyricsWPF {
     public partial class OptionsDialog : Window {
@@ -8,10 +9,6 @@ namespace SpotifyLyricsWPF {
         public OptionsDialog() {
             InitializeComponent();
             DataContext = ViewModel = OptionsViewModel.Instance;
-        }
-
-        private void MagicButton_OnClicked(object sender, RoutedEventArgs e) {
-            Backend.ShuffleServices();
         }
     }
 }

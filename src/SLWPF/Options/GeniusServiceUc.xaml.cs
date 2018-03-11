@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 using SpotifyLyricsDomain;
+using SpotifyLyricsDomain.Services;
 
 namespace SpotifyLyricsWPF.Options {
     public partial class GeniusServiceUc : UserControl {

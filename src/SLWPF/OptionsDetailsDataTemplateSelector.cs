@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using SpotifyLyricsDomain;
+using SpotifyLyricsDomain.Services;
 
 namespace SpotifyLyricsWPF {
     public class OptionsDetailsDataTemplateSelector : DataTemplateSelector {

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SpotifyLyricsDomain {
+namespace SpotifyLyricsDomain.Helpers {
     public static class StringHelpers {
         public static int SubstringCount(this string haystack, string needle) {
             //Counts occurrances of "needle" in "haystack". http://stackoverflow.com/a/35871647/4353819

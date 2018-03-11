@@ -40,11 +40,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackendViewModel.cs" />
-    <Compile Include="Backend.cs" />
-    <Compile Include="OptionsViewModel.cs" />
+    <Compile Include="ViewModels\BackendViewModel.cs" />
+    <Compile Include="Helpers\Backend.cs" />
+    <Compile Include="Services\GeniusService.cs" />
+    <Compile Include="Helpers\HttpHelpers.cs" />
+    <Compile Include="Exceptions\LyricsNotFoundException.cs" />
+    <Compile Include="Services\LyricsService.cs" />
+    <Compile Include="Models\Media.cs" />
+    <Compile Include="Services\MusixMatchService.cs" />
+    <Compile Include="ViewModels\OptionsViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StringHelpers.cs" />
+    <Compile Include="Exceptions\ServiceNotAvailableException.cs" />
+    <Compile Include="Helpers\SpotifyHelpers.cs" />
+    <Compile Include="Helpers\StringHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
@@ -66,5 +74,6 @@
   <ItemGroup>
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

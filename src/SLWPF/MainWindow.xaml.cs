@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using SpotifyLyricsDomain;
+using SpotifyLyricsDomain.ViewModels;
 
 namespace SpotifyLyricsWPF {
     public partial class MainWindow : Window {

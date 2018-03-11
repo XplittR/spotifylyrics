@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:spotifyLyricsDomain="clr-namespace:SpotifyLyricsDomain;assembly=SpotifyLyricsDomain"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance spotifyLyricsDomain:MusixMatchService}"
+             xmlns:services="clr-namespace:SpotifyLyricsDomain.Services;assembly=SpotifyLyricsDomain"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance services:MusixMatchService}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>

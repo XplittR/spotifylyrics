@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:SpotifyLyricsWPF"
         xmlns:spotifyLyricsDomain="clr-namespace:SpotifyLyricsDomain;assembly=SpotifyLyricsDomain"
         xmlns:options="clr-namespace:SpotifyLyricsWPF.Options"
-        mc:Ignorable="d" d:DataContext="{d:DesignInstance spotifyLyricsDomain:OptionsViewModel}"
+        xmlns:viewModels="clr-namespace:SpotifyLyricsDomain.ViewModels;assembly=SpotifyLyricsDomain"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:OptionsViewModel}"
         Title="OptionsDialog" Height="450" Width="800">
     <TabControl>
         <TabItem Header="Services">

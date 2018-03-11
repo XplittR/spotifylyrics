@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SpotifyLyricsWPF.Options"
              xmlns:spotifyLyricsDomain="clr-namespace:SpotifyLyricsDomain;assembly=SpotifyLyricsDomain"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance spotifyLyricsDomain:GeniusService}"
+             xmlns:services="clr-namespace:SpotifyLyricsDomain.Services;assembly=SpotifyLyricsDomain"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance services:GeniusService}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
