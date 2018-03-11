@@ -18,7 +18,8 @@ namespace SpotifyLyricsDomain.ViewModels {
 
         private void UpdateLyrics() {
             SetLoadingLyrics();
-            MyMedia = Backend.GetLyrics(WindowTitle);
+            MyMedia = Media.Create(WindowTitle);
+            MyMedia = Backend.LoadLyrics(MyMedia);
         }
 
         public void SetLoadingLyrics() {

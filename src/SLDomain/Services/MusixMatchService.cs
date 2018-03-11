@@ -42,7 +42,7 @@ namespace SpotifyLyricsDomain.Services {
             }
 
             var lyrics = doc.DocumentNode.OuterHtml.Split(new[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split(new[] { "\",\"language\":\"" }, StringSplitOptions.None)[0];
-            lyrics       = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
+            lyrics = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
             media.Lyrics = lyrics;
         }
     }

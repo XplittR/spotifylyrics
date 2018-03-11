@@ -30,9 +30,6 @@ namespace SpotifyLyricsDomain.Services {
             var lyricNode = lyricDivs.First();
             var lyrics = lyricNode.InnerText;
             media.Lyrics = lyrics;
-            //todo: return url for clickable
         }
-
-
     }
 }
