@@ -8,7 +8,7 @@
         xmlns:options="clr-namespace:SpotifyLyricsWPF.Options"
         xmlns:viewModels="clr-namespace:SpotifyLyricsDomain.ViewModels;assembly=SpotifyLyricsDomain"
         mc:Ignorable="d" d:DataContext="{d:DesignInstance viewModels:OptionsViewModel}"
-        Title="OptionsDialog" Height="450" Width="800">
+        Title="OptionsDialog" Height="450" Width="800" Closed="OptionsDialog_OnClosed">
     <TabControl>
         <TabItem Header="Services">
             <Grid>
@@ -20,16 +20,7 @@
                          ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="{Binding ServiceName}" />
-                                <Button Grid.Column="1" Content="^"/>
-                                <Button Grid.Column="2" Content="v"/>
-                            </Grid>
+                            <options:ServiceListItemUc/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

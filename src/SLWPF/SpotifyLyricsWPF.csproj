@@ -82,6 +82,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Options\ServiceListItemUc.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OptionsDetailsDataTemplateSelector.cs" />
@@ -96,6 +100,9 @@
     </Compile>
     <Compile Include="Options\MusixMatchServiceUc.xaml.cs">
       <DependentUpon>MusixMatchServiceUc.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\ServiceListItemUc.xaml.cs">
+      <DependentUpon>ServiceListItemUc.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

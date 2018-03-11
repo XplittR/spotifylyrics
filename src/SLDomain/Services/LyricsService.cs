@@ -1,12 +1,20 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using PropertyChanged;
 using SpotifyLyricsDomain.Helpers;
 using SpotifyLyricsDomain.Models;
+using SpotifyLyricsDomain.ViewModels;
 
 namespace SpotifyLyricsDomain.Services {
     [AddINotifyPropertyChangedInterface]
     public abstract class LyricsService {
         public bool IsEnabled { get; set; } = true;
+        public int Order { get; set; }
+
+        [JsonIgnore]
+        public bool CanOrderUp { get { return Order > 1; } }
+        [JsonIgnore]
+        public bool CanOrderDown { get { return Order < OptionsViewModel.Instance.Services.Count; } }
         protected abstract void GetLyricsInternal(Media media);
 
         private readonly Dictionary<string, Media> _lyricsCache = new Dictionary<string, Media>();
@@ -24,5 +32,7 @@ namespace SpotifyLyricsDomain.Services {
                 return GetType().Name.TrimEnd("Service");
             }
         }
+
+        public abstract ServiceSetting CreateSetting();
     }
 }

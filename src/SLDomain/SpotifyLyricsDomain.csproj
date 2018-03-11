@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ListHelpers.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="ViewModels\BackendViewModel.cs" />
     <Compile Include="Helpers\Backend.cs" />
     <Compile Include="Services\GeniusService.cs" />
@@ -63,6 +65,9 @@
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.7.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>11.0.1</Version>
     </PackageReference>
     <PackageReference Include="NLog.Config">
       <Version>4.4.13</Version>
