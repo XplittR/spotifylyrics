@@ -71,11 +71,13 @@ namespace SpotifyLyricsDomain {
         public static void ShuffleServices() {
             _serviceList = _serviceList.OrderBy(a => Guid.NewGuid()).ToList();
         }
+
         public static string LoadLyrics(Media media) {
             string lyrics = null;
-            foreach (var service in _serviceList) {
+
+            foreach (var service in OptionsViewModel.Instance.Services.Where(s => s.IsEnabled)) {
                 try {
-                    lyrics = service(media);
+                    lyrics = service.GetLyrics(media);
                     break;
                 } catch (LyricsNotFoundException ex) {
                     Console.WriteLine(ex.Message);
@@ -191,7 +193,7 @@ namespace SpotifyLyricsDomain {
             string html;
             using (var client = new WebClient()) {
                 client.Headers[HttpRequestHeader.UserAgent] = userAgent;
-                html                                        = client.DownloadString(url);
+                html = client.DownloadString(url);
             }
             return html;
         }

@@ -33,7 +33,9 @@ namespace SpotifyLyricsDomain {
         public LyricsService SelectedService { get; set; }
     }
 
+    [AddINotifyPropertyChangedInterface]
     public abstract class LyricsService {
+        public bool IsEnabled { get; set; } = true;
         public abstract string GetLyrics(Media media);
 
         public string ServiceName {
