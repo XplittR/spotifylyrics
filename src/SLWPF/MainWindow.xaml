@@ -21,7 +21,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" Text="{Binding MyMedia.DisplayTitle}" />
 
-            <Button Grid.Column="1" Content="Change lyrics"/>
+            <Button Grid.Column="1" Content="Change lyrics" Click="ChangeLyrics_OnClicked"/>
             <Button Grid.Column="2" Content="Options" Click="Options_OnClicked"/>
             <Button Grid.Column="3" Content="FontSize"/>
         </Grid>

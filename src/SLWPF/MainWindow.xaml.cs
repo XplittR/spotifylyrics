@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Threading;
 using SpotifyLyricsDomain;
+using SpotifyLyricsDomain.Helpers;
 using SpotifyLyricsDomain.ViewModels;
 
 namespace SpotifyLyricsWPF {
@@ -32,10 +33,18 @@ namespace SpotifyLyricsWPF {
         }
 
         private void Options_OnClicked(object sender, RoutedEventArgs e) {
-            Log.Info("testInfo");
             //todo: stop the DispatcherTimer?
             var dlg = new OptionsDialog() { Owner = this };
             dlg.ShowDialog();
+        }
+
+        private void ChangeLyrics_OnClicked(object sender, RoutedEventArgs e) {
+            try {
+                ViewModel.ChangeLyrics();
+            } catch (Exception ex) {
+                Log.Error(ex, "Failed to change lyrics");
+                ViewModel.WindowTitle = "error";
+            }
         }
     }
 }

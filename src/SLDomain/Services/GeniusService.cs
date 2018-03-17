@@ -21,7 +21,7 @@ namespace SpotifyLyricsDomain.Services {
 
             var lyricDivs = doc.DocumentNode.Descendants("div").Where(n => (n as HtmlNode).HasClass("lyrics")).ToList();
             if (!lyricDivs.Any()) {
-                throw LyricsNotFoundException.Create(ServiceName, media, url);
+                throw LyricsNotFoundException.Create(ServiceName, media);
             }
             if (lyricDivs.Count > 1) {
                 //todo: Do we need to select one in this case?

@@ -18,8 +18,18 @@ namespace SpotifyLyricsDomain.ViewModels {
 
         private void UpdateLyrics() {
             SetLoadingLyrics();
+            if (string.IsNullOrWhiteSpace(WindowTitle))
+                return;
             MyMedia = Media.Create(WindowTitle);
             MyMedia = Backend.LoadLyrics(MyMedia);
+        }
+
+        public void ChangeLyrics() {
+            SetLoadingLyrics();
+            if (string.IsNullOrWhiteSpace(WindowTitle))
+                return;
+            MyMedia = Media.Create(WindowTitle);
+            MyMedia = Backend.ChangeLyrics(MyMedia);
         }
 
         public void SetLoadingLyrics() {

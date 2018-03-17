@@ -24,11 +24,12 @@ namespace SpotifyLyricsDomain.Services {
 
             var rgx = new Regex(@"""track_share_url"":""([^""]*)""");
             if (!rgx.IsMatch(html)) {
-                throw LyricsNotFoundException.Create(ServiceName, media, url);
+                throw LyricsNotFoundException.Create(ServiceName, media);
             }
 
             var trackShareUrl = rgx.Match(html).Groups[1].Value;
             trackShareUrl = Regex.Unescape(trackShareUrl);
+            media.Url = trackShareUrl; //unsure about this one
             HtmlDocument doc = new HtmlDocument();
             try {
                 html = HttpHelpers.GetHtml(trackShareUrl, userAgent);
@@ -38,7 +39,7 @@ namespace SpotifyLyricsDomain.Services {
             }
             var notAvailable = doc.DocumentNode.Descendants("div").Any(n => (n as HtmlNode).HasClass("mxm-lyrics-not-available"));
             if (notAvailable) {
-                throw LyricsNotFoundException.Create(ServiceName, media, url);
+                throw LyricsNotFoundException.Create(ServiceName, media);
             }
 
             var lyrics = doc.DocumentNode.OuterHtml.Split(new[] { "\"body\":\"" }, StringSplitOptions.None)[1].Split(new[] { "\",\"language\":\"" }, StringSplitOptions.None)[0];
