@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Text;
 using Newtonsoft.Json;
 using PropertyChanged;
-using SpotifyLyricsDomain.Helpers;
 using SpotifyLyricsDomain.Models;
 using SpotifyLyricsDomain.Services;
 
 namespace SpotifyLyricsDomain.ViewModels {
     [AddINotifyPropertyChangedInterface]
     public class OptionsViewModel {
+        private const string SettingsFilename = "settings.json";
         public static OptionsViewModel Instance { get; set; }
 
-        public OptionsViewModel() {
-            bool readFromFile = false;//File.Exists("settings.json");
+        public static void Create() {
+            bool readFromFile = File.Exists(SettingsFilename);
+            OptionsViewModel vm;
             if (readFromFile) {
-                //ReadSettingsFromFile();
-                //todo: Read settings from file
+                vm = ReadSettingsFromFile();
             } else {
-                CreateDefaultSettings();
+                vm = new OptionsViewModel();
+                vm.CreateDefaultSettings();
             }
-            SelectedService = Services.First();
+            vm.SelectedService = vm.Services.First();
+            Instance = vm;
         }
 
         private void CreateDefaultSettings() {
@@ -35,20 +35,15 @@ namespace SpotifyLyricsDomain.ViewModels {
         }
 
         public void SaveSettings() {
-            /*var settings = new Settings(this);
-            var json = JsonConvert.SerializeObject(Instance, new JsonSerializerSettings {
-                Formatting = Formatting.Indented,
-                Converters = new List<JsonConverter> {
-                    new LyricsServiceConverter(){}
-                }
-            });
-            ReadSettingsFromFile(json);*/
+            var json = JsonConvert.SerializeObject(Instance, Formatting.Indented, new LyricsServiceConverter());
+            File.WriteAllText(SettingsFilename, json, Encoding.UTF8);
         }
-        
 
-        private void ReadSettingsFromFile(string jsonTemp) {
-            /*var optVM = JsonConvert.DeserializeObject<OptionsViewModel>(jsonTemp, new LyricsServiceConverter());*/
 
+        private static OptionsViewModel ReadSettingsFromFile() {
+            var json = File.ReadAllText(SettingsFilename, Encoding.UTF8);
+            var vm = JsonConvert.DeserializeObject<OptionsViewModel>(json, new LyricsServiceConverter());
+            return vm;
         }
 
         public List<LyricsService> Services { get; set; }

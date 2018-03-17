@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ListHelpers.cs" />
-    <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\LyricsServiceConverter.cs" />
+    <Compile Include="Services\DeprecatedService.cs" />
     <Compile Include="ViewModels\BackendViewModel.cs" />
     <Compile Include="Helpers\Backend.cs" />
     <Compile Include="Services\GeniusService.cs" />

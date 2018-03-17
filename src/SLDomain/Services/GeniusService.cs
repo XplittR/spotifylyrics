@@ -31,10 +31,5 @@ namespace SpotifyLyricsDomain.Services {
             var lyrics = lyricNode.InnerText;
             media.Lyrics = lyrics;
         }
-
-        public override ServiceSetting CreateSetting() {
-            var setting = new ServiceSetting();
-            return setting;
-        }
     }
 }

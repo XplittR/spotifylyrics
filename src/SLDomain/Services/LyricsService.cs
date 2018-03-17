@@ -32,7 +32,5 @@ namespace SpotifyLyricsDomain.Services {
                 return GetType().Name.TrimEnd("Service");
             }
         }
-
-        public abstract ServiceSetting CreateSetting();
     }
 }

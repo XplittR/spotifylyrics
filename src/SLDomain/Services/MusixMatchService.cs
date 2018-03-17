@@ -45,9 +45,5 @@ namespace SpotifyLyricsDomain.Services {
             lyrics = lyrics.Replace("\\n", Environment.NewLine).Replace("\\", "");
             media.Lyrics = lyrics;
         }
-
-        public override ServiceSetting CreateSetting() {
-            return null;
-        }
     }
 }

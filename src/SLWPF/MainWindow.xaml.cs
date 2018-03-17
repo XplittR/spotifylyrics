@@ -11,7 +11,7 @@ namespace SpotifyLyricsWPF {
 
         public MainWindow() {
             InitializeComponent();
-            OptionsViewModel.Instance = new OptionsViewModel();
+            OptionsViewModel.Create();
             DataContext = ViewModel = new BackendViewModel();
             ViewModel.SetLoadingLyrics();
             DispatcherTimer t = new DispatcherTimer();

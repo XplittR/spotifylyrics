@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using SpotifyLyricsDomain.Exceptions;
 using SpotifyLyricsDomain.Models;
 using SpotifyLyricsDomain.ViewModels;
 
 namespace SpotifyLyricsDomain.Helpers {
     public static class Backend {
-
+        private static readonly NLog.Logger Log = NLog.LogManager.GetCurrentClassLogger();
         public static Media LoadLyrics(Media media) {
 
             foreach (var service in OptionsViewModel.Instance.Services.Where(s => s.IsEnabled)) {
@@ -15,13 +14,13 @@ namespace SpotifyLyricsDomain.Helpers {
                     media = service.GetLyrics(media);
                     break;
                 } catch (LyricsNotFoundException ex) {
-                    Console.WriteLine(ex.Message);
-                    throw;
+                    Log.Error(ex);
+                    continue;
                 } catch (ServiceNotAvailableException ex) {
-                    Console.WriteLine(ex.Message);
-                    throw;
+                    Log.Error(ex);
+                    continue;
                 } catch (Exception ex) {
-                    Console.WriteLine(ex.Message);
+                    Log.Error(ex);
                     throw;
                 }
             }
